@@ -1,4 +1,4 @@
-import { Client, Events, GatewayIntentBits, MessageFlags, Partials } from 'discord.js';
+import { Client, Events, GatewayIntentBits, Partials } from 'discord.js';
 
 import { loadConfig } from './config.js';
 import { FileStore } from './db/fileStore.js';
@@ -49,7 +49,7 @@ async function bootstrap(): Promise<void> {
       if (interaction.isRepliable()) {
         const content = 'Something went wrong while processing your request. Please try again later.';
         if (interaction.replied || interaction.deferred) {
-          await interaction.followUp({ content, flags: MessageFlags.Ephemeral });
+          await interaction.followUp({ content, ephemeral: true });
         } else {
           await interaction.reply({ content, ephemeral: true });
         }

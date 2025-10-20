@@ -83,16 +83,7 @@ async function handleSubmitModal(interaction: ModalSubmitInteraction, context: B
     summary,
   });
 
-  const reviewChannel = await interaction.client.channels
-    .fetch(config.modReviewChannelId)
-    .catch((error) => {
-      logger.error('Failed to fetch review channel for collab submission', {
-        channelId: config.modReviewChannelId,
-        error: error instanceof Error ? error.message : String(error),
-      });
-      return null;
-    });
-
+  const reviewChannel = await interaction.client.channels.fetch(config.modReviewChannelId);
   if (!reviewChannel || !reviewChannel.isTextBased()) {
     await interaction.reply({
       content: 'Collab request saved, but the review channel could not be reached. Please contact a moderator.',
@@ -184,15 +175,7 @@ async function handleApproveModal(interaction: ModalSubmitInteraction, context: 
 
   await finalizeDecision(interaction, updated, messageId);
 
-  const approvedChannel = await interaction.client.channels
-    .fetch(config.collabsApprovedChannelId)
-    .catch((error) => {
-      logger.warn('Failed to fetch approved announcement channel', {
-        channelId: config.collabsApprovedChannelId,
-        error: error instanceof Error ? error.message : String(error),
-      });
-      return null;
-    });
+  const approvedChannel = await interaction.client.channels.fetch(config.collabsApprovedChannelId);
   if (approvedChannel && approvedChannel.isTextBased()) {
     await approvedChannel.send({ embeds: [buildApprovalEmbed(updated, note)] });
   }

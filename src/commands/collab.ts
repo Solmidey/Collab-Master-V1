@@ -236,15 +236,7 @@ export async function handleCollabCommand(
         return;
       }
 
-      const channel = await interaction.client.channels
-        .fetch(config.collabsApprovedChannelId)
-        .catch((error) => {
-          logger.error('Failed to fetch approved channel for reannounce', {
-            channelId: config.collabsApprovedChannelId,
-            error: error instanceof Error ? error.message : String(error),
-          });
-          return null;
-        });
+      const channel = await interaction.client.channels.fetch(config.collabsApprovedChannelId);
       if (!channel || !channel.isTextBased()) {
         await interaction.reply({
           content: 'Configured approved channel is not accessible.',
