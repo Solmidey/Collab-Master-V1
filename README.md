@@ -68,9 +68,9 @@ Copy `.env.example` to `.env` and fill in values:
 ```
 DISCORD_TOKEN=...
 DISCORD_CLIENT_ID=...
-MOD_REVIEW_CHANNEL_ID=1234567890
-COLLABS_APPROVED_CHANNEL_ID=1234567891
-COLLABS_DENIED_LOG_CHANNEL_ID=1234567892
+MOD_REVIEW_CHANNEL_ID=1429558691966746644
+COLLABS_APPROVED_CHANNEL_ID=1429558872393121893
+COLLABS_DENIED_LOG_CHANNEL_ID=1429558965448216586
 VERIFIED_ROLE_IDS=111111,222222
 MOD_ROLE_IDS=333333,444444
 APPROVED_ROLE_ID=555555
@@ -126,7 +126,7 @@ npm run dev
 The bot runs with `tsx` in watch mode. Invite it to a test server and run the registration script once per guild:
 
 ```bash
-npm run register:commands -- --guild <GUILD_ID>
+npm run register:commands -- --guild 1429558169172054181
 ```
 
 ### JSON Fallback Store
