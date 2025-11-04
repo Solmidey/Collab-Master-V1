@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: momentum-collab-portal-bot
+    name: collab-master-bot
     env: node
     plan: free
     buildCommand: npm install && npm run build

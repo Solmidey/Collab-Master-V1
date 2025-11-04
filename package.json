@@ -1,7 +1,7 @@
 {
-  "name": "momentum-collab-portal-bot",
+  "name": "collab-master-bot",
   "version": "1.0.0",
-  "description": "Momentum Finance Auto-Collab Portal bot",
+  "description": "Collab Master automation suite for community deals",
   "main": "dist/index.js",
   "type": "module",
   "scripts": {

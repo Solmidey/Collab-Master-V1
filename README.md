@@ -1,6 +1,6 @@
-# Momentum Collab Portal Bot
+# Collab Master Bot
 
-Momentum Collab Portal Bot is a Discord bot for the Momentum Finance community. It lets verified members submit collaboration ideas, routes them to moderators for review, and shares approved collabs with the community. The project targets **Node.js 20** with **TypeScript** and `discord.js` v14, and stores collab data in Supabase (with a JSON file fallback for local development).
+Collab Master Bot is a community-agnostic collaboration workflow assistant. It lets verified members submit collaboration ideas, routes them to moderators for review, and shares approved collabs with the community. The project targets **Node.js 20** with **TypeScript** and `discord.js` v14, and stores collab data in Supabase (with a JSON file fallback for local development).
 
 ## Features
 
@@ -100,6 +100,7 @@ Notes:
 - `UNVERIFIED_DEPOSIT_CAP_WEI` limits deposits for members without additional verification.
 - `REFUND_CONFIRM_THRESHOLD_WEI` enforces dual confirmation before the refund job executes high-value refunds.
 - `SWEEP_THRESHOLD_WEI` configures the treasury sweep automation to queue Safe transactions when balances are above the threshold.
+- Channel and role environment variables accept either raw IDs or Discord mention strings (e.g. `<#123>`); they are sanitized automatically on startup.
 
 ## Supabase Setup
 

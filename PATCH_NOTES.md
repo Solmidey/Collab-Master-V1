@@ -6,7 +6,8 @@
 - `test/EscrowV2.ts`: Hardhat tests covering deposits, signature-gated releases, disputes, and timelock refunds.
 - `packages/backend/**`: New backend services for milestones, disputes, IPFS pinning, audit logs, treasury sweeps, and jobs (`milestoneWatchdog`, `treasurySweep`, `anchorLogs`). Includes Express routes for deals and disputes plus Jest tests.
 - `packages/bot/src/commands/*`: Added `/deposit`, `/acceptmilestone`, and `/opendispute` command handlers with integration tests simulating end-to-end flows.
-- `src/interactions/modals.ts`, `src/commands/collab.ts`: Hardened channel resolution so mod review posts reliably reach the configured guild channels.
+- `src/interactions/modals.ts`, `src/commands/collab.ts`: Hardened channel resolution so mod review posts reliably reach the configured guild channels and rebranded strings for Collab Master.
+- `src/config.ts`: Added Discord ID sanitization so configuration accepts raw IDs or mention strings, preventing silent channel lookup failures.
 - `README.md`, `.env.example`: Documented new env vars, multisig workflow, and background jobs.
 - `package.json`: Added Hardhat/Jest tooling and scripts (`test`, `test:contracts`, `test:backend`, `test:bot`).
 
