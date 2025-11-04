@@ -6,30 +6,45 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsc",
+    "build": "tsc -p tsconfig.json && tsc -p packages/backend/tsconfig.json",
     "start": "node dist/index.js",
     "register:commands": "tsx src/registerCommands.ts",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "npm run test:contracts && npm run test:backend && npm run test:bot",
+    "test:contracts": "hardhat test",
+    "test:backend": "jest --config packages/backend/jest.config.ts",
+    "test:bot": "jest --config packages/bot/jest.config.ts"
   },
   "engines": {
     "node": "^20"
   },
   "dependencies": {
     "@discordjs/rest": "^1.7.1",
+    "@openzeppelin/contracts": "^5.0.1",
     "@supabase/supabase-js": "^2.38.4",
     "discord-api-types": "^0.37.61",
     "discord.js": "^14.14.1",
     "dotenv": "^16.4.5",
-    "nanoid": "^4.0.2"
+    "ethers": "^6.10.0",
+    "express": "^4.19.2",
+    "nanoid": "^4.0.2",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.12",
     "@types/node": "^20.12.7",
     "@typescript-eslint/eslint-plugin": "^7.4.0",
     "@typescript-eslint/parser": "^7.4.0",
     "eslint": "^9.1.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.29.1",
+    "hardhat": "^2.20.1",
+    "jest": "^29.7.0",
     "prettier": "^3.2.5",
+    "ts-jest": "^29.1.1",
+    "ts-node": "^10.9.2",
     "tsx": "^4.7.1",
     "typescript": "^5.4.4"
   }

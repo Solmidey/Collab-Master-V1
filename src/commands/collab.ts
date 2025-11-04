@@ -236,7 +236,10 @@ export async function handleCollabCommand(
         return;
       }
 
-      const channel = await interaction.client.channels.fetch(config.collabsApprovedChannelId);
+      const channel =
+        (interaction.guild &&
+          (await interaction.guild.channels.fetch(config.collabsApprovedChannelId).catch(() => null))) ||
+        (await interaction.client.channels.fetch(config.collabsApprovedChannelId).catch(() => null));
       if (!channel || !channel.isTextBased()) {
         await interaction.reply({
           content: 'Configured approved channel is not accessible.',

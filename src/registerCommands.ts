@@ -3,6 +3,9 @@ import { SlashCommandBuilder } from 'discord.js';
 
 import { loadConfig } from './config.js';
 import { collabCommand } from './commands/collab.js';
+import { depositCommand } from '../packages/bot/src/commands/deposit.js';
+import { acceptMilestoneCommand } from '../packages/bot/src/commands/acceptMilestone.js';
+import { openDisputeCommand } from '../packages/bot/src/commands/openDispute.js';
 import { logger } from './lib/logger.js';
 
 const args = process.argv.slice(2);
@@ -18,7 +21,7 @@ async function register(): Promise<void> {
   const config = loadConfig(logger);
   const rest = new REST({ version: '10' }).setToken(config.token);
 
-  const commands: SlashCommandBuilder[] = [collabCommand];
+  const commands: SlashCommandBuilder[] = [collabCommand, depositCommand, acceptMilestoneCommand, openDisputeCommand];
   const payload = commands.map((command) => command.toJSON());
 
   logger.info('Registering commands', { guildId });

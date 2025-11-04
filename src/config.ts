@@ -16,6 +16,10 @@ export interface BotConfig {
   supabaseUrl?: string;
   supabaseAnonKey?: string;
   dataFilePath: string;
+  unverifiedDepositCapWei: bigint;
+  refundConfirmThresholdWei: bigint;
+  sweepThresholdWei: bigint;
+  requireSafe: boolean;
 }
 
 function getEnvArray(key: string): string[] {
@@ -31,6 +35,16 @@ function getBooleanEnv(key: string, defaultValue: boolean): boolean {
   const raw = process.env[key];
   if (!raw) return defaultValue;
   return ['1', 'true', 'yes', 'on'].includes(raw.toLowerCase());
+}
+
+function getBigIntEnv(key: string, defaultValue: bigint): bigint {
+  const raw = process.env[key];
+  if (!raw) return defaultValue;
+  try {
+    return BigInt(raw);
+  } catch (error) {
+    throw new Error(`Invalid bigint env value for ${key}: ${raw}`);
+  }
 }
 
 function required(key: string, log: Logger): string {
@@ -62,6 +76,10 @@ export function loadConfig(log: Logger = logger): BotConfig {
     supabaseUrl: process.env.SUPABASE_URL,
     supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
     dataFilePath: new URL('../data/collabs.json', import.meta.url).pathname,
+    unverifiedDepositCapWei: getBigIntEnv('UNVERIFIED_DEPOSIT_CAP_WEI', 0n),
+    refundConfirmThresholdWei: getBigIntEnv('REFUND_CONFIRM_THRESHOLD_WEI', 0n),
+    sweepThresholdWei: getBigIntEnv('SWEEP_THRESHOLD_WEI', 0n),
+    requireSafe: getBooleanEnv('ESCROW_REQUIRE_SAFE', false),
   };
 
   if (Number.isNaN(config.minMemberDays) || config.minMemberDays < 0) {
