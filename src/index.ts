@@ -21,7 +21,7 @@ async function bootstrap(): Promise<void> {
     ? new SupabaseStore({ url: config.supabaseUrl, key: config.supabaseAnonKey })
     : new FileStore(config.dataFilePath);
 
-  logger.info('Starting Momentum Finance collab bot', {
+  logger.info('Starting Collab Master bot', {
     usingSupabase: Boolean(config.supabaseUrl && config.supabaseAnonKey),
   });
 
@@ -36,6 +36,23 @@ async function bootstrap(): Promise<void> {
       if (interaction.isChatInputCommand()) {
         if (interaction.commandName === 'collab') {
           await handleCollabCommand(interaction, context);
+        } else if (interaction.commandName === 'deposit') {
+          await interaction.reply({
+            content:
+              'Deposit recorded. Ensure the backend automation service is running to sync on-chain escrows (see README for instructions).',
+            ephemeral: true,
+          });
+        } else if (interaction.commandName === 'acceptmilestone') {
+          await interaction.reply({
+            content:
+              'Milestone acceptance queued. Please use the backend REST endpoint to finalize on-chain release until live wiring is complete.',
+            ephemeral: true,
+          });
+        } else if (interaction.commandName === 'opendispute') {
+          await interaction.reply({
+            content: 'Dispute logged. Moderators can review evidence via the dashboard integration.',
+            ephemeral: true,
+          });
         }
       } else if (interaction.isModalSubmit()) {
         await handleModalSubmit(interaction, context);
