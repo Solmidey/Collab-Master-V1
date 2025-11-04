@@ -63,6 +63,16 @@ function getOptionalSnowflake(key: string): string | undefined {
   return sanitized.length > 0 ? sanitized : undefined;
 }
 
+function getBigIntEnv(key: string, defaultValue: bigint): bigint {
+  const raw = process.env[key];
+  if (!raw) return defaultValue;
+  try {
+    return BigInt(raw);
+  } catch (error) {
+    throw new Error(`Invalid bigint env value for ${key}: ${raw}`);
+  }
+}
+
 function required(key: string, log: Logger): string {
   const value = process.env[key];
   if (!value) {
