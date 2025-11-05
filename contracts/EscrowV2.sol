@@ -43,7 +43,7 @@ contract EscrowV2 is EIP712 {
         address _controller,
         uint256 _deadline,
         uint256 _refundWindow
-    ) EIP712("MomentumEscrow", "2") {
+    ) EIP712("CollabMasterEscrow", "2") {
         require(_payer != address(0), "payer required");
         payer = _payer;
         controller = _controller;

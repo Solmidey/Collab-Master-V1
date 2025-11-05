@@ -9,7 +9,7 @@ import {
 import type { CollabRequest } from '../db/types.js';
 
 const ACCENT_COLOR = 0x3174f1;
-const AUTHOR_NAME = 'Momentum Finance – Collab Portal';
+const AUTHOR_NAME = 'Collab Master – Portal';
 
 export interface ReviewEmbedOptions {
   request: CollabRequest;
