@@ -1,6 +1,6 @@
-# Momentum Collab Portal Bot
+# Collab Master Bot
 
-Momentum Collab Portal Bot is a Discord bot for the Momentum Finance community. It lets verified members submit collaboration ideas, routes them to moderators for review, and shares approved collabs with the community. The project targets **Node.js 20** with **TypeScript** and `discord.js` v14, and stores collab data in Supabase (with a JSON file fallback for local development).
+Collab Master Bot is a community-agnostic collaboration workflow assistant. It lets verified members submit collaboration ideas, routes them to moderators for review, and shares approved collabs with the community. The project targets **Node.js 20** with **TypeScript** and `discord.js` v14, and stores collab data in Supabase (with a JSON file fallback for local development).
 
 ## Features
 
@@ -13,6 +13,10 @@ Momentum Collab Portal Bot is a Discord bot for the Momentum Finance community. 
 - Supabase storage with graceful retries; fallback JSON store when Supabase credentials are missing.
 - Structured logging (JSON in production, readable in development).
 - Ready for deployment to Render (free tier) with `render.yaml` and `Procfile`.
+- Non-custodial escrow automation with EIP-712 signature verification and Gnosis Safe fallback.
+- Deadline-aware milestone watchdog with automated reminders and refund triggers.
+- Dispute workflow with evidence capture, arbitrator escalation, and admin resolution hook.
+- Immutable audit log anchoring job and automated treasury sweep queueing.
 
 ## Project Structure
 
@@ -78,6 +82,12 @@ MIN_MEMBER_DAYS=3
 CREATE_REVIEW_THREADS=true
 SUPABASE_URL=https://xxxx.supabase.co
 SUPABASE_ANON_KEY=xxxx
+ESCROW_CONTROLLER_PRIVATE_KEY=0x...
+ESCROW_REQUIRE_SAFE=false
+ESCROW_SIGNER_KEYS=0xkey1,0xkey2
+UNVERIFIED_DEPOSIT_CAP_WEI=1000000000000000000
+REFUND_CONFIRM_THRESHOLD_WEI=100000000000000000
+SWEEP_THRESHOLD_WEI=5000000000000000000
 ```
 
 Notes:
@@ -85,6 +95,12 @@ Notes:
 - `VERIFIED_ROLE_IDS` is a comma-separated list of role IDs that qualify a member to submit.
 - `MIN_MEMBER_DAYS` defaults to 3 if omitted.
 - Leave `SUPABASE_URL` / `SUPABASE_ANON_KEY` blank to fall back to `data/collabs.json` (auto-created).
+- `ESCROW_CONTROLLER_PRIVATE_KEY` is required for direct on-chain releases. Set `ESCROW_REQUIRE_SAFE=true` to queue via Gnosis Safe instead.
+- `ESCROW_SIGNER_KEYS` (comma separated) provide additional signer wallets for milestone releases when automation needs to simulate multi-sig signatures locally.
+- `UNVERIFIED_DEPOSIT_CAP_WEI` limits deposits for members without additional verification.
+- `REFUND_CONFIRM_THRESHOLD_WEI` enforces dual confirmation before the refund job executes high-value refunds.
+- `SWEEP_THRESHOLD_WEI` configures the treasury sweep automation to queue Safe transactions when balances are above the threshold.
+- Channel and role environment variables accept raw IDs, mention strings (e.g. `<#123>`), or Discord channel URLs; they are sanitized automatically on startup and validated before the bot logs in.
 
 ## Supabase Setup
 
@@ -123,6 +139,23 @@ cp .env.example .env  # fill in values
 npm run dev
 ```
 
+### Backend & Jobs
+
+- Contracts live under `contracts/`. Run `npm run test:contracts` to verify Solidity escrow logic.
+- Backend services, routes, and jobs are in `packages/backend`. Run `npm run test:backend` for milestone, dispute, watchdog, and treasury coverage.
+- Bot command handlers and integration tests are under `packages/bot`. Run `npm run test:bot` for end-to-end command simulations.
+- Scheduled jobs:
+  - `npm run tsx packages/backend/src/jobs/milestoneWatchdog.ts` to send deadline reminders and queue time-lock refunds.
+  - `npm run tsx packages/backend/src/jobs/treasurySweep.ts` to enqueue multisig sweep transactions when balances exceed `SWEEP_THRESHOLD_WEI`.
+  - `npm run tsx packages/backend/src/jobs/anchorLogs.ts` to compute a Merkle root of recent audit logs and anchor them on-chain via `Anchors.sol`.
+
+### Testing the multisig flow locally
+
+1. Deploy the contracts to a local Hardhat node (e.g., `npx hardhat node` and `npx hardhat run --network localhost scripts/deploy.ts`).
+2. Set `ESCROW_CONTROLLER_PRIVATE_KEY` to one of the generated Hardhat accounts or enable Safe queueing with `ESCROW_REQUIRE_SAFE=true`.
+3. Use the `/deposit`, `/acceptmilestone`, and `/opendispute` commands to simulate the lifecycle, or call the command handlers directly in tests.
+4. Review `packages/backend/src/services/treasuryService.ts` for the prepared Safe payload and follow the inline TODO to plug in the Gnosis Safe Transaction Service when service credentials are available.
+
 The bot runs with `tsx` in watch mode. Invite it to a test server and run the registration script once per guild:
 
 ```bash
@@ -157,6 +190,9 @@ If `SUPABASE_URL` or `SUPABASE_ANON_KEY` is missing, the bot reads and writes re
 | `/collab config show` | Mods / admins | Display current configuration (channels, roles, storage mode).
 | `/collab list status:<STATUS> limit:<N>` | Mods | List recent requests by status (default 10, max 50).
 | `/collab reannounce id:<REQUEST_ID>` | Mods | Re-post the approved announcement embed.
+| `/deposit` | Treasury / admins | Record an escrow deposit subject to deposit caps and blocklist checks. |
+| `/acceptmilestone` | Buyer / multisig signer | Accept a milestone, run auto-verification, and trigger escrow release or Safe queue. |
+| `/opendispute` | Buyer / seller | Open a dispute, locking the milestone until moderators resolve it. |
 
 ## Moderator Workflow
 

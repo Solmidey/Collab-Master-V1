@@ -83,7 +83,9 @@ async function handleSubmitModal(interaction: ModalSubmitInteraction, context: B
     summary,
   });
 
-  const reviewChannel = await interaction.client.channels.fetch(config.modReviewChannelId);
+  const reviewChannel =
+    (await interaction.guild.channels.fetch(config.modReviewChannelId).catch(() => null)) ??
+    (await interaction.client.channels.fetch(config.modReviewChannelId).catch(() => null));
   if (!reviewChannel || !reviewChannel.isTextBased()) {
     await interaction.reply({
       content: 'Collab request saved, but the review channel could not be reached. Please contact a moderator.',
@@ -175,7 +177,10 @@ async function handleApproveModal(interaction: ModalSubmitInteraction, context: 
 
   await finalizeDecision(interaction, updated, messageId);
 
-  const approvedChannel = await interaction.client.channels.fetch(config.collabsApprovedChannelId);
+  const approvedChannel =
+    (interaction.guild &&
+      (await interaction.guild.channels.fetch(config.collabsApprovedChannelId).catch(() => null))) ||
+    (await interaction.client.channels.fetch(config.collabsApprovedChannelId).catch(() => null));
   if (approvedChannel && approvedChannel.isTextBased()) {
     await approvedChannel.send({ embeds: [buildApprovalEmbed(updated, note)] });
   }

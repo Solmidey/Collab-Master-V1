@@ -16,7 +16,7 @@ import { buildApprovalEmbed } from '../lib/embeds.js';
 
 export const collabCommand = new SlashCommandBuilder()
   .setName('collab')
-  .setDescription('Momentum Finance collab portal')
+  .setDescription('Collab Master portal commands')
   .addSubcommand((sub) =>
     sub.setName('submit').setDescription('Submit a new collaboration request.'),
   )
@@ -140,7 +140,7 @@ export async function handleCollabCommand(
         return;
       }
 
-      const modal = new ModalBuilder().setTitle('Momentum Finance Collab Request').setCustomId(SUBMIT_MODAL_ID);
+      const modal = new ModalBuilder().setTitle('Collab Master Submission').setCustomId(SUBMIT_MODAL_ID);
 
       const walletInput = new TextInputBuilder()
         .setCustomId('wallet')
@@ -152,14 +152,14 @@ export async function handleCollabCommand(
       const projectLinkInput = new TextInputBuilder()
         .setCustomId('project_link')
         .setLabel('Project Link')
-        .setPlaceholder('https://momentum.finance/project')
+        .setPlaceholder('https://example.com/project')
         .setStyle(TextInputStyle.Short)
         .setRequired(true);
 
       const handleInput = new TextInputBuilder()
         .setCustomId('handle')
         .setLabel('Your X / Farcaster Handle (optional)')
-        .setPlaceholder('@momentumfi')
+        .setPlaceholder('@example')
         .setStyle(TextInputStyle.Short)
         .setRequired(false);
 
@@ -236,7 +236,10 @@ export async function handleCollabCommand(
         return;
       }
 
-      const channel = await interaction.client.channels.fetch(config.collabsApprovedChannelId);
+      const channel =
+        (interaction.guild &&
+          (await interaction.guild.channels.fetch(config.collabsApprovedChannelId).catch(() => null))) ||
+        (await interaction.client.channels.fetch(config.collabsApprovedChannelId).catch(() => null));
       if (!channel || !channel.isTextBased()) {
         await interaction.reply({
           content: 'Configured approved channel is not accessible.',
