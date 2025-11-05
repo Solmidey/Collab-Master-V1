@@ -25,7 +25,7 @@ describe("EscrowV2", function () {
   ) {
     const nonce = await escrow.nonce();
     const domain = {
-      name: "CollabMasterEscrow",
+      name: "MomentumEscrow",
       version: "2",
       chainId: (await ethers.provider.getNetwork()).chainId,
       verifyingContract: await escrow.getAddress(),

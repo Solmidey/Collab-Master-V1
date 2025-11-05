@@ -21,7 +21,7 @@ async function bootstrap(): Promise<void> {
     ? new SupabaseStore({ url: config.supabaseUrl, key: config.supabaseAnonKey })
     : new FileStore(config.dataFilePath);
 
-  logger.info('Starting Collab Master bot', {
+  logger.info('Starting Momentum Finance collab bot', {
     usingSupabase: Boolean(config.supabaseUrl && config.supabaseAnonKey),
   });
 

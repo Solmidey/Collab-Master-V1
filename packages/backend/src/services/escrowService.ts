@@ -64,7 +64,7 @@ export class EscrowService {
     const amountsHash = ethers.solidityPackedKeccak256(amounts.map(() => "uint256"), amounts);
     return {
       domain: {
-        name: "CollabMasterEscrow",
+        name: "MomentumEscrow",
         version: "2",
         chainId: contract.chainId,
         verifyingContract: contract.address,
